@@ -13,9 +13,8 @@ function App() {
       <main>
         <Routes>
           <Route path='/' element={<HomeScreen />} />
-          <Route path='/cart' element={<ErrorPage />} />
           <Route path='/login' element={<ErrorPage />} />
-          <Route path='/cart/:userId/:qty' element={<CartPage />} />
+          <Route path='/cart' element={<CartPage />} />
           <Route path='/product/:id' element={<ProductPage />} />
           <Route path='*' element={<ErrorPage />} />
         </Routes>
