@@ -22,7 +22,7 @@ function ProductPage() {
   const [quantity, setQuantity] = useState(1);
 
   // get the parameter passed from thr path in the App component.
-  const { userId } = useParams();
+  const { id: productId } = useParams();
 
   // navigation (could also use Link instead).
   const navigate = useNavigate();
@@ -34,8 +34,8 @@ function ProductPage() {
     data: product,
     error,
   } = useQuery({
-    queryKey: ['product', userId],
-    queryFn: () => fetchSingleProduct(userId),
+    queryKey: ['product', productId],
+    queryFn: () => fetchSingleProduct(productId),
   });
 
   if (isLoading) {
@@ -45,7 +45,7 @@ function ProductPage() {
   }
 
   const handleAddToCart = () => {
-    navigate(`/cart/${userId}/qty=${quantity}`);
+    navigate(`/cart/${productId}/qty=${quantity}`);
   };
 
   return (
