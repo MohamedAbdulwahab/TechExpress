@@ -16,7 +16,7 @@ function App() {
           <Route path='/cart' element={<ErrorPage />} />
           <Route path='/login' element={<ErrorPage />} />
           <Route path='/cart/:userId/:qty' element={<CartPage />} />
-          <Route path='/product/:userId' element={<ProductPage />} />
+          <Route path='/product/:id' element={<ProductPage />} />
           <Route path='*' element={<ErrorPage />} />
         </Routes>
       </main>
