@@ -1,19 +1,24 @@
 import Header from './components/Header';
 import Footer from './components/Footer';
-import { Container } from 'react-bootstrap';
 import HomeScreen from './pages/HomeScreen';
+import ErrorPage from './pages/ErrorPage';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 function App() {
   return (
-    <>
+    <Router>
       <Header />
-      <Container>
-        <main className='py-3'>
-          <HomeScreen />
-        </main>
-      </Container>
+      <main>
+        <Routes>
+          <Route path='/' element={<HomeScreen />} />
+          <Route path='/cart' element={<ErrorPage />} />
+          <Route path='/login' element={<ErrorPage />} />
+          <Route path='/product/:id' element={<ErrorPage />} />
+          <Route path='*' element={<ErrorPage />} />
+        </Routes>
+      </main>
       <Footer />
-    </>
+    </Router>
   );
 }
 
