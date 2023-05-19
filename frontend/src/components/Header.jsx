@@ -5,7 +5,7 @@ function Header() {
     <header>
       <Navbar collapseOnSelect bg='dark' variant='dark' expand='lg'>
         <Container>
-          <Navbar.Brand href='/'>TechExpress</Navbar.Brand>
+          <Navbar.Brand href='/'>Tech-Express</Navbar.Brand>
           <Navbar.Toggle aria-controls='responsive-navbar-nav' />
           <Navbar.Collapse id='responsive-navbar-nav'>
             <Nav className='ms-auto'>
