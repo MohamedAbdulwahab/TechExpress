@@ -12,3 +12,8 @@ a:-webkit-any-link {
   display: flex;
   justify-content: right;
 } */
+
+.card-text {
+  display: flex;
+  justify-content: space-between;
+}

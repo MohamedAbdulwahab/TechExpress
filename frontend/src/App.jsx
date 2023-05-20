@@ -3,6 +3,7 @@ import Footer from './components/Footer';
 import HomeScreen from './pages/HomeScreen';
 import ErrorPage from './pages/ErrorPage';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import ProductPage from './pages/ProductPage';
 
 function App() {
   return (
@@ -13,7 +14,7 @@ function App() {
           <Route path='/' element={<HomeScreen />} />
           <Route path='/cart' element={<ErrorPage />} />
           <Route path='/login' element={<ErrorPage />} />
-          <Route path='/product/:id' element={<ErrorPage />} />
+          <Route path='/product/:userId' element={<ProductPage />} />
           <Route path='*' element={<ErrorPage />} />
         </Routes>
       </main>
