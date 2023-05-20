@@ -1,0 +1,22 @@
+{
+  "name": "techexpress",
+  "version": "1.0.0",
+  "description": "MERN full-stack web app",
+  "main": "index.js",
+  "scripts": {
+    "start": "node backend/server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MohamedAbdulwahab/TechExpress.git"
+  },
+  "author": "Mohamed Abdulwahab",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/MohamedAbdulwahab/TechExpress/issues"
+  },
+  "homepage": "https://github.com/MohamedAbdulwahab/TechExpress#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
