@@ -1,4 +1,3 @@
-import products from '../products';
 import {
   Container,
   Row,
@@ -9,9 +8,10 @@ import {
   ListGroup,
   ListGroupItem,
 } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
 import Ratings from '../components/Ratings';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
 function ProductPage() {
   // get the parameter passed from thr path in the App component.
@@ -20,10 +20,18 @@ function ProductPage() {
   // navigation (could also use Link instead).
   const navigate = useNavigate();
 
-  // find the exact product.
-  const product = products.find((product) => {
-    return product._id === userId;
-  });
+  /* get products from the backend */
+  const [product, setProduct] = useState({});
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      const { data } = await axios.get(`/api/products/${userId}`);
+
+      setProduct(data);
+    };
+
+    fetchProduct();
+  }, [userId]);
 
   return (
     <>
