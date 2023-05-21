@@ -3,6 +3,7 @@ import express from 'express';
 import connectDB from './config/db.js';
 import products from './data/products.js';
 
+/* .env file must be located in root folder */
 dotenv.config();
 
 const app = express();
