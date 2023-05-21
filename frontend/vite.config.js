@@ -3,8 +3,8 @@ import react from '@vitejs/plugin-react';
 import * as dotenv from 'dotenv';
 
 export default ({ mode }) => {
+  // access config with process.env.{configName}
   dotenv.config({ path: `./.env.${mode}` });
-  // now you can access config with process.env.{configName}
 
   // https://vitejs.dev/config/
   return defineConfig({
