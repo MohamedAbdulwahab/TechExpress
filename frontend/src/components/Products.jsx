@@ -2,6 +2,7 @@ import { Col } from 'react-bootstrap';
 import ShowProduct from './ShowProduct';
 import { useQuery } from '@tanstack/react-query';
 import { fetchProducts } from '../api/products.js';
+import Loader from './Loader';
 
 function Products() {
   // React Query (fetch data)
@@ -16,7 +17,7 @@ function Products() {
   });
 
   if (isLoading) {
-    return 'loading...';
+    return <Loader />;
   } else if (isError) {
     return `Error: ${error.message}`;
   }
