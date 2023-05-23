@@ -10,8 +10,8 @@ import {
 } from 'react-bootstrap';
 import Ratings from '../components/Ratings';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useQuery } from '@tanstack/react-query';
+import { fetchSingleProduct } from '../api/products.js';
 
 function ProductPage() {
   // get the parameter passed from thr path in the App component.
@@ -20,18 +20,22 @@ function ProductPage() {
   // navigation (could also use Link instead).
   const navigate = useNavigate();
 
-  /* get products from the backend */
-  const [product, setProduct] = useState({});
+  // React Query (fetch data by ID)
+  const {
+    isLoading,
+    isError,
+    data: product,
+    error,
+  } = useQuery({
+    queryKey: ['product', userId],
+    queryFn: () => fetchSingleProduct(userId),
+  });
 
-  useEffect(() => {
-    const fetchProduct = async () => {
-      const { data } = await axios.get(`/api/products/${userId}`);
-
-      setProduct(data);
-    };
-
-    fetchProduct();
-  }, [userId]);
+  if (isLoading) {
+    return 'Data is loading...';
+  } else if (isError) {
+    return `Error: ${error}`;
+  }
 
   return (
     <>
