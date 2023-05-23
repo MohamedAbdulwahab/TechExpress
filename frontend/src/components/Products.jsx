@@ -1,21 +1,27 @@
 import { Col } from 'react-bootstrap';
 import ShowProduct from './ShowProduct';
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useQuery } from '@tanstack/react-query';
+import { fetchProducts } from '../api/products.js';
 
 function Products() {
-  const [products, setProducts] = useState([]);
+  // React Query (fetch data)
+  const {
+    isLoading,
+    isError,
+    data: products,
+    error,
+  } = useQuery({
+    queryKey: ['products'],
+    queryFn: fetchProducts,
+  });
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      const { data } = await axios.get('/api/products/');
+  if (isLoading) {
+    return 'loading...';
+  } else if (isError) {
+    return `Error: ${error.message}`;
+  }
 
-      setProducts(data);
-    };
-
-    fetchProducts();
-  }, []);
-
+  // Axios retuns an object. Access the data property from it.
   const renderedProducts = products.map((product) => {
     return (
       <Col key={product._id} md={6} lg={4} lx={3}>
