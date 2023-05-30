@@ -10,12 +10,11 @@ import {
   Form,
 } from 'react-bootstrap';
 import Ratings from '../components/Ratings';
-import { useParams, useNavigate } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
-import { fetchSingleProduct } from '../api/products.js';
-import Loader from '../components/Loader';
-import Message from '../components/Message';
 import { useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import SpinnerLoader from '../components/SpinnerLoader';
+import Message from '../components/Message';
+import { useGetProductDetailsQuery } from '../store/slices/productsApiSlice';
 
 function ProductPage() {
   // state to track the quantity
@@ -27,21 +26,18 @@ function ProductPage() {
   // navigation (could also use Link instead).
   const navigate = useNavigate();
 
-  // React Query (fetch data by ID)
+  // Redux toolkit (fetch products by ID)
   const {
+    data: product,
     isLoading,
     isError,
-    data: product,
     error,
-  } = useQuery({
-    queryKey: ['product', productId],
-    queryFn: () => fetchSingleProduct(productId),
-  });
+  } = useGetProductDetailsQuery(productId);
 
   if (isLoading) {
-    return <Loader />;
+    return <SpinnerLoader />;
   } else if (isError) {
-    return <Message variant='danger'>Error: {error.message}</Message>;
+    return <Message variant='danger'>Error: {error.error}</Message>;
   }
 
   const handleAddToCart = () => {

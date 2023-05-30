@@ -1,21 +1,12 @@
 import { Col } from 'react-bootstrap';
 import ShowProduct from './ShowProduct';
-import { useQuery } from '@tanstack/react-query';
-import { fetchProducts } from '../api/products.js';
 import Loader from './Loader';
 import Message from './Message';
+import { useGetProductsQuery } from '../store/slices/productsApiSlice';
 
 function Products() {
-  // React Query (fetch data)
-  const {
-    isLoading,
-    isError,
-    data: products,
-    error,
-  } = useQuery({
-    queryKey: ['products'],
-    queryFn: fetchProducts,
-  });
+  // Redux toolkit (fetch all products)
+  const { data: products, isLoading, isError, error } = useGetProductsQuery();
 
   if (isLoading) {
     return <Loader />;
