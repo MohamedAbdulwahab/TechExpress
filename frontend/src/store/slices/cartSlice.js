@@ -1,0 +1,36 @@
+import { createSlice } from '@reduxjs/toolkit';
+import { updateCart } from '../../utilities/cartUtilities';
+
+const initialState = localStorage.getItem('cart')
+  ? JSON.parse(localStorage.getItem('cart'))
+  : { cartItems: [] };
+
+const cartSlice = createSlice({
+  name: 'cart',
+  initialState,
+  reducers: {
+    addToCart: (state, action) => {
+      // get the item to be added to cart.
+      const item = action.payload;
+
+      // check if the item is in cart.
+      const itemInCart = state.cartItems.find((currentItem) => {
+        return currentItem._id === item._id;
+      });
+
+      // add a new item or just update the quantity.
+      if (itemInCart) {
+        state.cartItems = state.cartItems.map((currentItem) => {
+          return currentItem._id === itemInCart._id ? item : currentItem;
+        });
+      } else {
+        state.cartItems = [...state.cartItems, item];
+      }
+
+      updateCart(state);
+    },
+  },
+});
+
+export const { addToCart } = cartSlice.actions;
+export default cartSlice.reducer;
