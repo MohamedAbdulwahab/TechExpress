@@ -12,9 +12,11 @@ import {
 import Ratings from '../components/Ratings';
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import SpinnerLoader from '../components/SpinnerLoader';
 import Message from '../components/Message';
 import { useGetProductDetailsQuery } from '../store/slices/productsApiSlice';
+import { addToCart } from '../store/slices/cartSlice';
 
 function ProductPage() {
   // state to track the quantity
@@ -22,6 +24,9 @@ function ProductPage() {
 
   // get the parameter passed from thr path in the App component.
   const { id: productId } = useParams();
+
+  // dispatch
+  const dispatch = useDispatch();
 
   // navigation (could also use Link instead).
   const navigate = useNavigate();
@@ -41,7 +46,8 @@ function ProductPage() {
   }
 
   const handleAddToCart = () => {
-    navigate(`/cart/${productId}/qty=${quantity}`);
+    dispatch(addToCart({ ...product, quantity }));
+    navigate(`/cart`);
   };
 
   return (
