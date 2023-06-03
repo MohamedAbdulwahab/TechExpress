@@ -27,7 +27,7 @@ const userSchema = mongoose.Schema(
   }
 );
 
-// Password hash middleware.
+// Middleware to hash the password before inserting it into the database.
 userSchema.pre('save', function save(next) {
   const user = this;
   if (!user.isModified('password')) {
@@ -47,7 +47,7 @@ userSchema.pre('save', function save(next) {
   });
 });
 
-// Helper method for validating user's password.
+// Helper method to validate users password.
 userSchema.methods.comparePassword = async function (candidatePassword) {
   return await bcrypt.compare(candidatePassword, this.password);
 };
