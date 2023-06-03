@@ -117,13 +117,52 @@ const getUserProfile = asyncHandler(async (req, res) => {
 // @desc    update user profile
 // @route   PUT /api/users/profile
 // @access  Private
-const updateUserProfile = async (req, res) => {
-  try {
-    res.send('update user profile');
-  } catch (error) {
-    res.status(404).json({ message: 'update user profile error' });
+const updateUserProfile = asyncHandler(async (req, res) => {
+  // find the signed in user by id.
+  const user = await User.findById(req.user._id);
+
+  if (user) {
+    // search for user by email in the database.
+    const userExists = await User.findOne({ email: req.body.email });
+
+    // email already exists in the database.
+    if (userExists) {
+      // send a client errer.
+      res.status(400);
+
+      // throw and error.
+      throw new Error('Email is used by an existing user');
+    } else {
+      // email doesn't exist in the database: update email.
+      user.email = req.body.email || user.email;
+    }
+
+    // update name.
+    user.name = req.body.name || user.name;
+
+    // trigger only if user requests password update.
+    if (req.body.password) {
+      user.password = req.body.password;
+    }
+
+    // wait for the data to get updated.
+    const updatedUser = await user.save();
+
+    // response with success status (200) and the updated user info.
+    res.status(200).json({
+      _id: updatedUser._id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      isAdmin: updatedUser.isAdmin,
+    });
+  } else {
+    // send a not found status (404).
+    res.status(404);
+
+    // throw an error.
+    throw new Error('User not found');
   }
-};
+});
 
 // @desc    get all users
 // @route   GET /api/users
