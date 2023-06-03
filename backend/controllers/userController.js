@@ -74,12 +74,6 @@ const registerUser = asyncHandler(async (req, res) => {
     // throw an error.
     throw new Error('Invalid user data');
   }
-
-  try {
-    res.send('register user');
-  } catch (error) {
-    res.status(404).json({ message: 'register user error' });
-  }
 });
 
 // @desc    logout user / clear cookie
@@ -100,10 +94,23 @@ const logoutUser = asyncHandler(async (req, res) => {
 // @route   GET /api/users/profile
 // @access  Private
 const getUserProfile = asyncHandler(async (req, res) => {
-  try {
-    res.send('get user profile');
-  } catch (error) {
-    res.status(404).json({ message: 'get user profile error' });
+  // find the signed in user.
+  const user = await User.findById(req.user._id);
+
+  if (user) {
+    // set the status to success (200) and send user info.
+    res.status(200).json({
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      isAdmin: user.isAdmin,
+    });
+  } else {
+    // send a not found status (404).
+    res.status(404);
+
+    // throw an error.
+    throw new Error('User not found');
   }
 });
 
