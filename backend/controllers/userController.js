@@ -1,6 +1,6 @@
 import asyncHandler from 'express-async-handler';
 import User from '../models/userModel.js';
-import jwt from 'jsonwebtoken';
+import generateToken from '../utilities/generateToken.js';
 
 // @desc    authenticate user (login) & get token
 // @route   POST /api/user/login
@@ -14,20 +14,10 @@ const authUser = asyncHandler(async (req, res) => {
 
   // user is found.
   if (user && (await user.comparePassword(password))) {
-    // create a json web token (jwt)
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-      expiresIn: '30d',
-    });
+    // use generateToken from utilities to generate a jwt and set it as a http-only cookie.
+    generateToken(res, user._id);
 
-    // set JWT as a http-only cookie
-    res.cookie('jwt', token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV !== 'development',
-      sameSite: 'strict',
-      maxAge: 30 * 24 * 60 * 60 * 1000, // expires in 30 days.
-    });
-
-    res.json({
+    res.status(200).json({
       _id: user._id,
       name: user.name,
       email: user.email,
@@ -42,13 +32,55 @@ const authUser = asyncHandler(async (req, res) => {
 // @desc    register (creat) a new user
 // @route   POST /api/users
 // @access  Public
-const registerUser = async (req, res) => {
+const registerUser = asyncHandler(async (req, res) => {
+  // get name, email, and password from the request body.
+  const { name, email, password } = req.body;
+
+  // search for user by email in the database.
+  const userExists = await User.findOne({ email });
+
+  // user already exists in the database.
+  if (userExists) {
+    // send a client errer.
+    res.status(400);
+
+    // throw and error.
+    throw new Error('Email is used by an existing user');
+  }
+
+  // create a new user.
+  const user = await User.create({
+    name: name,
+    email: email,
+    password: password,
+  });
+
+  // new user has been created.
+  if (user) {
+    // create a json web token (jwt) and set it as a http-only cookie.
+    generateToken(res, user._id);
+
+    // set status to success creation (201) and send user info.
+    res.status(201).json({
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      isAdmin: user.isAdmin,
+    });
+  } else {
+    // user has not been created.
+    res.status(400);
+
+    // throw an error.
+    throw new Error('Invalid user data');
+  }
+
   try {
     res.send('register user');
   } catch (error) {
     res.status(404).json({ message: 'register user error' });
   }
-};
+});
 
 // @desc    logout user / clear cookie
 // @route   POST /api/users/logout
@@ -67,13 +99,13 @@ const logoutUser = asyncHandler(async (req, res) => {
 // @desc    get user profile
 // @route   GET /api/users/profile
 // @access  Private
-const getUserProfile = async (req, res) => {
+const getUserProfile = asyncHandler(async (req, res) => {
   try {
     res.send('get user profile');
   } catch (error) {
     res.status(404).json({ message: 'get user profile error' });
   }
-};
+});
 
 // @desc    update user profile
 // @route   PUT /api/users/profile
