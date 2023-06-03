@@ -1,12 +1,14 @@
 import * as dotenv from 'dotenv';
 import express from 'express';
 import connectDB from './config/db.js';
+import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import passport from 'passport';
 import configurePassport from './config/passport.js';
 import MongoStore from 'connect-mongo';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 import productRoutes from './routes/productRoutes.js';
+import userRoutes from './routes/userRoutes.js';
 
 /* .env file must be located in root folder */
 dotenv.config();
@@ -19,9 +21,12 @@ configurePassport(passport);
 /* connect to Mongo database */
 connectDB();
 
-// Body Parsing
+// Body Parsing middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+
+// cookie parser middleware
+app.use(cookieParser());
 
 // Setup Sessions - stored in MongoDB
 app.use(
@@ -41,6 +46,7 @@ app.use(passport.session());
 
 /* Routes */
 app.use('/api/products', productRoutes);
+app.use('/api/users', userRoutes);
 
 /* custom error handlers */
 app.use(notFound);
