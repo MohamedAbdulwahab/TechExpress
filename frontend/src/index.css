@@ -17,3 +17,8 @@ a:-webkit-any-link {
   display: flex;
   justify-content: space-between;
 }
+
+.disabled-link {
+  pointer-events: none;
+  color: gray;
+}
