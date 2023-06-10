@@ -9,7 +9,6 @@ import {
   FormLabel,
   FormCheck,
   Button,
-  Row,
   Col,
 } from 'react-bootstrap';
 import { savePaymentMethod } from '../store/slices/cartSlice';
@@ -32,7 +31,7 @@ const PaymentPage = () => {
   const handleFormSubmit = (e) => {
     e.preventDefault();
     dispatch(savePaymentMethod(paymentMethod));
-    navigate('placeorder');
+    navigate('/placeorder');
   };
 
   return (
