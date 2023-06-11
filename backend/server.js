@@ -9,6 +9,7 @@ import MongoStore from 'connect-mongo';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 import productRoutes from './routes/productRoutes.js';
 import userRoutes from './routes/userRoutes.js';
+import orderRoutes from './routes/orderRoutes.js';
 
 /* .env file must be located in root folder */
 dotenv.config();
@@ -47,6 +48,7 @@ app.use(passport.session());
 /* Routes */
 app.use('/api/products', productRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/orders', orderRoutes);
 
 /* custom error handlers */
 app.use(notFound);
