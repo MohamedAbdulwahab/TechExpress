@@ -22,6 +22,11 @@ export default ({ mode }) => {
           changeOrigin: true,
           secure: false,
         },
+        '/api/order': {
+          target: 'http://localhost:5500',
+          changeOrigin: true,
+          secure: false,
+        },
       },
     },
   });
