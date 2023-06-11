@@ -8,6 +8,7 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import PaymentPage from './pages/PaymentPage';
 import ShippingPage from './pages/ShippingPage';
+import PlaceOrderPage from './pages/PlaceOrderPage';
 import PrivateRoute from './components/PrivateRoute';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
@@ -31,6 +32,7 @@ function App() {
           <Route path='' element={<PrivateRoute />}>
             <Route path='/shipping' element={<ShippingPage />} />
             <Route path='/payment' element={<PaymentPage />} />
+            <Route path='/placeorder' element={<PlaceOrderPage />} />
           </Route>
         </Routes>
       </main>
