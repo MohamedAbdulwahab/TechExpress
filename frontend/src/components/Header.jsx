@@ -47,7 +47,11 @@ function Header() {
 
               {/* sign in or userInfo */}
               {userInfo ? (
-                <NavDropdown title={userInfo.name} id='username'>
+                <NavDropdown
+                  title={userInfo.name}
+                  id='username'
+                  className='m-0'
+                >
                   <NavDropdown.Item as={Link} to='/profile'>
                     Profile
                   </NavDropdown.Item>
@@ -59,6 +63,25 @@ function Header() {
                 <Nav.Link as={Link} to='/login'>
                   <i className='fa fa-user'></i> Sign In
                 </Nav.Link>
+              )}
+
+              {/* admin configurations */}
+              {userInfo && userInfo.isAdmin && (
+                <NavDropdown title='Admin' id='adminmenu'>
+                  {/* products settings  */}
+                  <NavDropdown.Item as={Link} to='/admin/productlist'>
+                    Products
+                  </NavDropdown.Item>
+
+                  {/* orders settings  */}
+                  <NavDropdown.Item as={Link} to='/admin/userlist'>
+                    Users
+                  </NavDropdown.Item>
+
+                  <NavDropdown.Item as={Link} to='/admin/orderlist'>
+                    Orders
+                  </NavDropdown.Item>
+                </NavDropdown>
               )}
             </Nav>
           </Navbar.Collapse>
