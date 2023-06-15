@@ -125,7 +125,7 @@ const PlaceOrderPage = () => {
                 <ListGroupItem>
                   <Row>
                     <Col>Cart Subtotal:</Col>
-                    <Col>${cart.itemsPrice}</Col>
+                    <Col>${cart.itemsPrice.toFixed(2)}</Col>
                   </Row>
                 </ListGroupItem>
 
