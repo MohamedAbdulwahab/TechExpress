@@ -12,6 +12,7 @@ import PlaceOrderPage from './pages/PlaceOrderPage';
 import OrderPage from './pages/OrderPage';
 import OrderListScreen from './pages/admin/OrderListScreen';
 import ProductListPage from './pages/admin/ProductListPage';
+import ProductEditPage from './pages/admin/ProductEditPage';
 import ProfilePage from './pages/ProfilePage';
 import PrivateRoute from './components/PrivateRoute';
 import AdminRoute from './components/AdminRoute';
@@ -46,6 +47,10 @@ function App() {
           <Route path='' element={<AdminRoute />}>
             <Route path='/admin/orderlist' element={<OrderListScreen />} />
             <Route path='/admin/productlist' element={<ProductListPage />} />
+            <Route
+              path='/admin/product/:id/edit'
+              element={<ProductEditPage />}
+            />
           </Route>
         </Routes>
       </main>
