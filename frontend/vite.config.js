@@ -27,6 +27,11 @@ export default ({ mode }) => {
           changeOrigin: true,
           secure: false,
         },
+        '/api/upload': {
+          target: 'http://localhost:5500',
+          changeOrigin: true,
+          secure: false,
+        },
       },
     },
   });
