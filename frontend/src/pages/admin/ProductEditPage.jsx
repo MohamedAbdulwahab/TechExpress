@@ -1,13 +1,15 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { Container, Row, Col, Form, Button } from 'react-bootstrap';
+import { Container, Row, Col, Form, Button, Spinner } from 'react-bootstrap';
 import FormContainer from '../../components/FormContainer';
 import Message from '../../components/Message';
 import SpinnerLoader from '../../components/SpinnerLoader';
 import { toast } from 'react-toastify';
+import { Image } from 'cloudinary-react';
 import {
   useGetProductDetailsQuery,
   useUpdateProductByIdMutation,
+  useUpdateProductImageMutation,
 } from '../../store/slices/productsApiSlice';
 
 const ProductEditPage = () => {
@@ -25,9 +27,12 @@ const ProductEditPage = () => {
     data: product,
     isLoading,
     isError,
-    refetch,
     error,
   } = useGetProductDetailsQuery(productId);
+
+  // use cloudinary to update product image
+  const [updateProductImage, { isLoading: loadingImageUpdate }] =
+    useUpdateProductImageMutation();
 
   const [
     updateProduct,
@@ -74,6 +79,32 @@ const ProductEditPage = () => {
     }
   };
 
+  const handleFileUpload = async (e) => {
+    // create the form data instance.
+    const formData = new FormData();
+
+    // append the image object to the fromData instance [name must be: 'file'].
+    formData.append('file', e.target.files[0]);
+
+    // append cloudinary upload present
+    formData.append('upload_preset', 'u7mpkl7y');
+
+    try {
+      // upload image to cloudinary storage and save the response.
+      const res = await updateProductImage(formData);
+
+      if (res.data) {
+        // show a success message.
+        toast.success('Image updated successfully');
+      }
+
+      // update the image url.
+      setImage(res.data.secure_url);
+    } catch (err) {
+      toast.error(err?.data?.message || err.error || 'Error updating image');
+    }
+  };
+
   return (
     <>
       <Container>
@@ -112,7 +143,35 @@ const ProductEditPage = () => {
                 />
               </Form.Group>
 
-              {/* image place holder */}
+              {/* image */}
+              <Form.Group className='mb-3' controlId='image'>
+                <Row>
+                  <Col>
+                    <Form.Label>Image</Form.Label>
+                  </Col>
+                  <Col>
+                    {loadingImageUpdate && (
+                      <div className='d-flex justify-content-end mb-1'>
+                        <Spinner animation='grow' variant='primary' />
+                        <Spinner animation='grow' variant='primary' />
+                        <Spinner animation='grow' variant='primary' />
+                      </div>
+                    )}
+                  </Col>
+                </Row>
+                <Form.Control
+                  type='text'
+                  placeholder='Enter Image URL'
+                  value={image}
+                  onChange={(e) => setImage(e.target.value)}
+                />
+
+                <Form.Control
+                  type='file'
+                  label='Choose File'
+                  onChange={handleFileUpload}
+                />
+              </Form.Group>
 
               {/* brand */}
               <Form.Group className='mb-3' controlId='brand'>
