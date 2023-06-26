@@ -3,7 +3,9 @@ import { Link } from 'react-router-dom';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import SpinnerLoader from '../../components/SpinnerLoader';
 import Message from '../../components/Message';
+import Paginate from '../../components/Pagination';
 import { toast } from 'react-toastify';
+import { useParams } from 'react-router-dom';
 import {
   useGetProductsQuery,
   useCreateProductMutation,
@@ -11,13 +13,11 @@ import {
 } from '../../store/slices/productsApiSlice';
 
 const ProductListPage = () => {
-  const {
-    data: products,
-    isLoading,
-    isError,
-    error,
-    refetch,
-  } = useGetProductsQuery();
+  const { pageNumber } = useParams();
+
+  const { data, isLoading, isError, error, refetch } = useGetProductsQuery({
+    pageNumber,
+  });
 
   const [createProduct, { isLoading: loadingCreateProduct }] =
     useCreateProductMutation();
@@ -82,7 +82,7 @@ const ProductListPage = () => {
               </thead>
 
               <tbody>
-                {products.map((product) => {
+                {data.products.map((product) => {
                   return (
                     <tr key={product._id}>
                       <td>{product._id}</td>
@@ -113,6 +113,18 @@ const ProductListPage = () => {
             </Table>
           </>
         )}
+
+        <Row>
+          <Col className='pagination-center mt-2'>
+            {!isLoading && (
+              <Paginate
+                numberOfPages={data.numberOfPages}
+                currentPage={data.pageNumber}
+                isAdmin={true}
+              />
+            )}
+          </Col>
+        </Row>
       </Container>
     </>
   );
