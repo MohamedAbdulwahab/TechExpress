@@ -13,6 +13,8 @@ import OrderPage from './pages/OrderPage';
 import OrderListScreen from './pages/admin/OrderListScreen';
 import ProductListPage from './pages/admin/ProductListPage';
 import ProductEditPage from './pages/admin/ProductEditPage';
+import UserListPage from './pages/admin/UserListPage';
+import UserEditPage from './pages/admin/UserEditPage';
 import ProfilePage from './pages/ProfilePage';
 import PrivateRoute from './components/PrivateRoute';
 import AdminRoute from './components/AdminRoute';
@@ -28,6 +30,12 @@ function App() {
         <Routes>
           {/* public Routes */}
           <Route path='/' element={<HomeScreen />} />
+          <Route path='/search/:keyword' element={<HomeScreen />} />
+          <Route path='/page/:pageNumber' element={<HomeScreen />} />
+          <Route
+            path='/search/:keyword/page/:pageNumber'
+            element={<HomeScreen />}
+          />
           <Route path='/login' element={<LoginPage />} />
           <Route path='/register' element={<RegisterPage />} />
           <Route path='/cart' element={<CartPage />} />
@@ -47,6 +55,12 @@ function App() {
           <Route path='' element={<AdminRoute />}>
             <Route path='/admin/orderlist' element={<OrderListScreen />} />
             <Route path='/admin/productlist' element={<ProductListPage />} />
+            <Route
+              path='/admin/productlist/:pageNumber'
+              element={<ProductListPage />}
+            />
+            <Route path='/admin/userlist' element={<UserListPage />} />
+            <Route path='/admin/user/:id/edit' element={<UserEditPage />} />
             <Route
               path='/admin/product/:id/edit'
               element={<ProductEditPage />}
