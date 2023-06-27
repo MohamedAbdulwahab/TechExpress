@@ -8,19 +8,32 @@ import {
   ListGroup,
   ListGroupItem,
   Form,
+  FormGroup,
+  FormLabel,
+  FormControl,
 } from 'react-bootstrap';
 import Ratings from '../components/Ratings';
 import { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 import SpinnerLoader from '../components/SpinnerLoader';
 import Message from '../components/Message';
-import { useGetProductDetailsQuery } from '../store/slices/productsApiSlice';
+import {
+  useGetProductDetailsQuery,
+  useCreateReviewMutation,
+} from '../store/slices/productsApiSlice';
 import { addToCart } from '../store/slices/cartSlice';
+import Meta from '../components/Meta';
 
 function ProductPage() {
   // state to track the quantity
   const [quantity, setQuantity] = useState(1);
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState('');
+
+  // get logged-in user information
+  const { userInfo } = useSelector((state) => state.login);
 
   // get the parameter passed from thr path in the App component.
   const { id: productId } = useParams();
@@ -31,13 +44,17 @@ function ProductPage() {
   // navigation (could also use Link instead).
   const navigate = useNavigate();
 
-  // Redux toolkit (fetch products by ID)
+  // Redux toolkit query (fetch products by ID)
   const {
     data: product,
     isLoading,
     isError,
     error,
   } = useGetProductDetailsQuery(productId);
+
+  // RTK Query
+  const [createReview, { isLoading: loadingReviews, error: reviewError }] =
+    useCreateReviewMutation();
 
   if (isLoading) {
     return <SpinnerLoader />;
@@ -50,8 +67,27 @@ function ProductPage() {
     navigate(`/cart`);
   };
 
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      await createReview({
+        _id: productId,
+        submittedBy: userInfo._id,
+        rating,
+        comment,
+      }).unwrap();
+      toast.success('Review Submitted');
+      setRating(0);
+      setComment('');
+    } catch (err) {
+      toast.error(err?.data?.message || reviewError);
+    }
+  };
+
   return (
     <>
+      <Meta title={product.name} />;
       <Container>
         <Button className='my-3' onClick={() => navigate('/')}>
           Go Back
@@ -138,6 +174,100 @@ function ProductPage() {
                 </ListGroupItem>
               </ListGroup>
             </Card>
+          </Col>
+        </Row>
+
+        <Row>
+          <Col lg={6}>
+            <div className='my-3 border'>
+              <h3 className='py-2 ms-3'>Reviews</h3>
+              {product.reviews.length === 0 && (
+                <ListGroup className='mx-3'>
+                  <Message className='py-5' variant='warning'>
+                    This product has no reviews
+                  </Message>
+                </ListGroup>
+              )}
+              <ListGroup>
+                {product.reviews.map((review) => {
+                  return (
+                    <ListGroupItem key={review._id} className='py-1 my-2 mx-2'>
+                      <Row>
+                        <Col sm={4} className='text-left mt-2'>
+                          <p>{review.name}</p>
+                        </Col>
+                        <Col sm={4} className='text-center mt-2 '>
+                          <p>{review.createdAt.substring(0, 10)}</p>
+                        </Col>
+                        <Col sm={4} className='text-end mt-2'>
+                          <Ratings value={review.rating} />
+                        </Col>
+                        <hr />
+                        <Col sm={12}>
+                          <p>{review.comment}</p>
+                        </Col>
+                      </Row>
+                    </ListGroupItem>
+                  );
+                })}
+
+                <ListGroupItem className='border-0'>
+                  <h4>Write a Review</h4>
+                  {loadingReviews && <SpinnerLoader />}
+                  {userInfo ? (
+                    <Form onSubmit={handleFormSubmit}>
+                      {/* rating  */}
+                      <FormGroup controlId='rating' className='py-2'>
+                        <FormLabel>Rating</FormLabel>
+                        <FormControl
+                          as='select'
+                          value={rating}
+                          onChange={(e) => setRating(Number(e.target.value))}
+                        >
+                          <option value='select'>Select</option>
+                          <option value='1'>1 - Poor</option>
+                          <option value='2'>2 - Fair</option>
+                          <option value='3'>3 - Good</option>
+                          <option value='4'>4 - Very Good</option>
+                          <option value='5'>5 - Excellent</option>
+                        </FormControl>
+                      </FormGroup>
+
+                      {/* comment  */}
+                      <FormGroup controlId='comment' className='py-2'>
+                        <FormLabel>Comment</FormLabel>
+                        <FormControl
+                          as='textarea'
+                          rows='3'
+                          value={comment}
+                          onChange={(e) => setComment(e.target.value)}
+                        ></FormControl>
+                      </FormGroup>
+
+                      {/* submit  */}
+                      <ListGroupItem className='border-0'>
+                        <Row>
+                          <Button
+                            disabled={loadingReviews}
+                            type='submit'
+                            className='my-2'
+                          >
+                            Submit
+                          </Button>
+                        </Row>
+                      </ListGroupItem>
+                    </Form>
+                  ) : (
+                    <ListGroup>
+                      <Message variant='warning'>
+                        Please <Link to={'/login'}>Sign-In</Link> to write a
+                        review
+                      </Message>
+                    </ListGroup>
+                  )}
+                </ListGroupItem>
+              </ListGroup>
+            </div>
           </Col>
         </Row>
       </Container>
