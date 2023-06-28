@@ -14,6 +14,14 @@ const reviewSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    submittedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+    },
+    createdAt: {
+      type: String,
+      default: Date(),
+    },
   },
   {
     timestaps: true,
