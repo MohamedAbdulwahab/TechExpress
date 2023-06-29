@@ -1,6 +1,7 @@
 import { Container, Nav, Navbar, Badge, NavDropdown } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import SearchBox from './SearchBox';
 import { logout } from '../store/slices/authSlice';
 import { useLogoutMutation } from '../store/slices/usersApiSlice';
 
@@ -37,6 +38,8 @@ function Header() {
           <Navbar.Toggle aria-controls='responsive-navbar-nav' />
           <Navbar.Collapse id='responsive-navbar-nav'>
             <Nav className='ms-auto'>
+              {/* Search Bar  */}
+              <SearchBox />
               {/* cart  */}
               <Nav.Link as={Link} to='/cart'>
                 <i className='fa fa-shopping-cart'></i> Cart{' '}
