@@ -4,17 +4,36 @@ import Product from '../models/productModel.js';
 // @desc    Fetch all products
 // @route   GET /api/products
 // @access  Public
-const getProducts = async (req, res) => {
-  try {
-    // find all products.
-    const products = await Product.find({});
+const getProducts = asyncHandler(async (req, res) => {
+  // set products per page.
+  const productsPerPage = 6;
 
-    // response with all products in json format.
-    res.json(products);
-  } catch (error) {
+  // search products.
+  const keyword = req.query.keyword
+    ? { name: { $regex: req.query.keyword, $options: 'i' } }
+    : {};
+
+  // get page number.
+  const pageNumber = Number(req.query.pageNumber) || 1;
+
+  // get the total number (count) of products.
+  const count = await Product.countDocuments(keyword);
+
+  // find and return products.
+  const products = await Product.find({ ...keyword })
+    .limit(productsPerPage)
+    .skip(productsPerPage * (pageNumber - 1));
+
+  if (products) {
+    res.json({
+      products,
+      pageNumber,
+      numberOfPages: Math.ceil(count / productsPerPage),
+    });
+  } else {
     res.status(404).json({ message: 'Product not Found :(' });
   }
-};
+});
 
 // @desc    Fetch a single product
 // @route   GET /api/products/:id
@@ -57,7 +76,7 @@ const createProduct = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Create a new product
+// @desc    Delete a new product
 // @route   POST /api/products
 // @access  Private/Admin
 const deleteProductById = asyncHandler(async (req, res) => {
@@ -105,10 +124,53 @@ const updateProductById = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    Create a new review
+// @route   POST /api/products/:id/reviews
+// @access  Private
+const createProductReview = asyncHandler(async (req, res) => {
+  const { rating, comment, submittedBy } = req.body;
+
+  const product = await Product.findById(req.params.id);
+
+  if (product) {
+    const alreadyReviewed = product.reviews.find(
+      (r) => String(r.submittedBy) === String(req.user._id)
+    );
+
+    if (alreadyReviewed) {
+      res.status(400);
+      throw new Error('You have reviewed this product before');
+    }
+
+    const review = {
+      name: req.user.name,
+      rating: Number(rating),
+      comment,
+      user: req.user._id,
+      submittedBy,
+    };
+
+    product.reviews.push(review);
+
+    product.numReviews = product.reviews.length;
+
+    product.rating =
+      product.reviews.reduce((acc, item) => item.rating + acc, 0) /
+      product.reviews.length;
+
+    await product.save();
+    res.status(201).json({ message: 'Review added' });
+  } else {
+    res.status(404);
+    throw new Error('Product not found');
+  }
+});
+
 export {
   getProducts,
   getProductById,
   createProduct,
   deleteProductById,
   updateProductById,
+  createProductReview,
 };
