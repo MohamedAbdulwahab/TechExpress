@@ -4,16 +4,21 @@ import { apiSlice } from './apiSlice';
 export const productsApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getProducts: builder.query({
-      query: () => ({
+      query: ({ keyword, pageNumber }) => ({
         url: PRODUCTS_URL,
+        params: {
+          pageNumber,
+          keyword,
+        },
       }),
-      providesTags: ['Products'],
+      providesTags: ['Product'],
       keepUnusedDataFor: 5,
     }),
     getProductDetails: builder.query({
       query: (productId) => ({
         url: `${PRODUCTS_URL}/${productId}`,
       }),
+      providesTags: ['Product'],
       keepUnusedDataFor: 5,
     }),
     createProduct: builder.mutation({
@@ -21,13 +26,14 @@ export const productsApiSlice = apiSlice.injectEndpoints({
         url: PRODUCTS_URL,
         method: 'POST',
       }),
-      invalidatesTags: ['Products'],
+      invalidatesTags: ['Product'],
     }),
     deleteProductById: builder.mutation({
       query: (productId) => ({
         url: `${PRODUCTS_URL}/${productId}`,
         method: 'DELETE',
       }),
+      invalidatesTags: ['Product'],
     }),
     updateProductById: builder.mutation({
       query: (data) => ({
@@ -35,7 +41,23 @@ export const productsApiSlice = apiSlice.injectEndpoints({
         method: 'PUT',
         body: data,
       }),
-      invalidatesTags: ['Products'],
+      invalidatesTags: ['Product'],
+    }),
+    updateProductImage: builder.mutation({
+      query: (data) => ({
+        url: 'https://api.cloudinary.com/v1_1/da0pdyeod/image/upload',
+        method: 'POST',
+        body: data,
+      }),
+      invalidatesTags: ['Product'],
+    }),
+    createReview: builder.mutation({
+      query: (data) => ({
+        url: `/api/products/${data._id}/reviews`,
+        method: 'POST',
+        body: data,
+      }),
+      invalidatesTags: ['Product'],
     }),
   }),
 });
@@ -46,4 +68,7 @@ export const {
   useCreateProductMutation,
   useDeleteProductByIdMutation,
   useUpdateProductByIdMutation,
+  useUploadProductImageMutation,
+  useCreateReviewMutation,
+  useUpdateProductImageMutation,
 } = productsApiSlice;
