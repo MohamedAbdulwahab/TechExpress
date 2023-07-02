@@ -1,3 +1,4 @@
+import path from 'path';
 import * as dotenv from 'dotenv';
 import express from 'express';
 import connectDB from './config/db.js';
@@ -54,6 +55,18 @@ app.use('/api/orders', orderRoutes);
 app.get('api/config/paypal', (req, res) => {
   res.send({ clientId: process.env.PAYPAL_CLIENT_ID });
 });
+
+/* set the react build/dist folder for production */
+if (process.env.NODE_ENV === 'production') {
+  // set as static folder.
+  const __dirname = path.resolve();
+  app.use(express.static(path.join(__dirname, '/frontend/dist')));
+
+  // any route that is not an api route (shown above) will be redirected to index.html
+  app.get('*', (req, res) =>
+    res.sendFile(path.resolve(__dirname, 'frontend', 'build', 'index.html'))
+  );
+}
 
 /* custom error handlers */
 app.use(notFound);
