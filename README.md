@@ -2,6 +2,8 @@
 
 > An eCommerce web app built with the MERN Stack (MongoDB, Express, React, and Node.JS), Redux, RTK-Query, and React-Bootstrap.
 
+> Live Demo: https://tech-express.onrender.com
+
 <img src="./frontend/public/images/demo.png">
 
 <!-- toc -->
@@ -84,6 +86,9 @@ You can use the following commands to seed the database with some sample users a
 ```
 # Import data
 npm run data:import
+```
+
+```
 # Destroy data
 npm run data:destroy
 ```
@@ -96,4 +101,4 @@ npm run data:destroy
 
 ## Credit
 
-Copyright (c) 2023 Mohamed Abdulwahab
+Copyright © Mohamed Abdulwahab 2023
