@@ -7,12 +7,6 @@ a:-webkit-any-link {
   cursor: pointer;
 }
 
-/* testing CSS in Bootstrap */
-/* .card-body h4 {
-  display: flex;
-  justify-content: right;
-} */
-
 .card-text {
   display: flex;
   justify-content: space-between;
@@ -21,4 +15,9 @@ a:-webkit-any-link {
 .disabled-link {
   pointer-events: none;
   color: gray;
+}
+
+.pagination-center {
+  display: flex;
+  justify-content: center;
 }
