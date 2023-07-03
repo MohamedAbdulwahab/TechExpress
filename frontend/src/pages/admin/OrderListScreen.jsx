@@ -6,8 +6,6 @@ import { useGetOrdersQuery } from '../../store/slices/ordersApiSlice';
 const OrderListScreen = () => {
   const { data: allOrders, isLoading, isError, error } = useGetOrdersQuery();
 
-  console.log(allOrders);
-
   return (
     <>
       <Container>
@@ -17,7 +15,7 @@ const OrderListScreen = () => {
           { error }
         ) : (
           <>
-            <h3 className='py-3'>Orders</h3>
+            <h3 className='pt-4 pb-3'>Orders</h3>
             {/* table head  */}
             <Table striped bordered hover responsive className='table-sm'>
               <thead>
