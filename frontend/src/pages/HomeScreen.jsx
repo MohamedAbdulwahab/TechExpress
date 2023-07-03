@@ -1,11 +1,13 @@
 import { Container, Row } from 'react-bootstrap';
 import Products from '../components/Products';
+import Meta from '../components/Meta';
 
 function HomeScreen() {
   return (
     <>
       <Container>
-        <main className='py-3'>
+        <main className='pt-3'>
+          <Meta />
           <h1>Latest Products</h1>
           <Row>
             <Products />
